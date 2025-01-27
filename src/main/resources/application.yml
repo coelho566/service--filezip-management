@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: service--framezip-management
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: framezip-group-id
+  data:
+    mongodb:
+      uri: mongodb://admin:admin@localhost:27017/db-framezip?authSource=admin
+  servlet:
+    multipart:
+      max-file-size: 2GB
+      max-request-size: 2GB
+  security:
+    oauth2:
+      resource-server:
+        jwt:
+          issuer-uri: http://localhost:5000/realms/filezip-dev
+          jwk-set-uri: http://localhost:5000/realms/filezip-dev/protocol/openid-connect/certs
+
+s3:
+  bucket:
+    name: service-management-bucket
+
+jwt:
+  auth:
+    converter:
+      resource-id: my-super-client
+      principal-attribute: principal_username
+
+#logging:
+#  level:
+#    root: DEBUG  # Nível de log para toda a aplicação
+#    org.springframework: DEBUG  # Logs detalhados do Spring
+#    org.hibernate: DEBUG  # Logs detalhados do Hibernate
+#    com.seuprojeto: DEBUG  # Pacote específico da sua aplicação
+
+
+
