@@ -1,6 +1,9 @@
 package com.framezip.management.adapters.inbound.controller;
 
 
+import com.framezip.management.adapters.inbound.controller.request.VideoFrameRequest;
+import com.framezip.management.adapters.inbound.controller.response.BaseResponse;
+import com.framezip.management.adapters.inbound.controller.response.ProcessResponse;
 import com.framezip.management.application.core.usecase.CreateFileZipUseCase;
 import com.framezip.management.application.core.usecase.DownloadFileZipUseCase;
 import com.framezip.management.application.core.usecase.GetStatusVideoProcessorUseCase;
@@ -15,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.UUID;
 
 
 @Slf4j
@@ -29,29 +31,26 @@ public class VideoManagementController {
     private final DownloadFileZipUseCase downloadFileZipUseCase;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadVideo(JwtAuthenticationToken auth,
-                                              @RequestParam("intervalFrame") Double intervalFrame,
-                                              @RequestParam("files") List<MultipartFile> files) {
-
-        var correlationId = UUID.randomUUID().toString();
-        log.info("Uploading video using correlationId: {}", correlationId);
-
+    public ResponseEntity<ProcessResponse> uploadVideo(JwtAuthenticationToken auth,
+                                                       @RequestParam("intervalFrame") Double intervalFrame,
+                                                       @RequestParam("files") List<MultipartFile> files) {
+        log.info("Uploading video frame");
         var videoFrameRequest = VideoFrameRequest.builder()
                 .userId(auth.getToken().getClaimAsString(StandardClaimNames.SUB))
                 .userName(auth.getToken().getClaimAsString(StandardClaimNames.PREFERRED_USERNAME))
                 .userEmail(auth.getToken().getClaimAsString(StandardClaimNames.EMAIL))
-                .correlationId(correlationId)
                 .intervalFrame(intervalFrame)
                 .build();
 
-        createFileZipUseCase.uploadVideo(videoFrameRequest, files);
-        return ResponseEntity.ok(correlationId);
+        var processResponse = createFileZipUseCase.uploadVideo(videoFrameRequest, files);
+        return ResponseEntity.ok(processResponse);
     }
 
     @GetMapping("/{correlationId}/status")
     public ResponseEntity<BaseResponse<List<VideoFrameResponse>>> statusVideoProcessor(JwtAuthenticationToken auth,
                                                                                        @PathVariable("correlationId") String correlationId) {
 
+        log.info("Getting status video processor correlation id: {}", correlationId);
         var statusVideoFrame = getStatusVideoProcessorUseCase
                 .getStatusVideoFrame(auth.getToken().getClaimAsString(StandardClaimNames.SUB), correlationId);
 
@@ -66,10 +65,10 @@ public class VideoManagementController {
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
         headers.add(HttpHeaders.CONTENT_TYPE, "application/zip");
 
+        log.info("Init downloading zip file");
         byte[] bytes = downloadFileZipUseCase.downloadFileZip(auth.getToken().getClaimAsString(StandardClaimNames.SUB), fileName);
 
         return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
-
     }
 }
 

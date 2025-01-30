@@ -1,6 +1,8 @@
 package com.framezip.management.application.core.usecase.impl;
 
-import com.framezip.management.adapters.inbound.controller.VideoFrameRequest;
+import com.framezip.management.adapters.inbound.controller.request.VideoFrameRequest;
+import com.framezip.management.adapters.inbound.controller.response.ProcessResponse;
+import com.framezip.management.adapters.inbound.controller.response.VideoProcessResponse;
 import com.framezip.management.application.core.domain.ProcessorStatus;
 import com.framezip.management.application.core.domain.VideoFrame;
 import com.framezip.management.application.core.usecase.CreateFileZipUseCase;
@@ -12,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,10 +27,13 @@ public class CreateFileZipUseCaseImpl implements CreateFileZipUseCase {
     private final UploadVideoStoragePort uploadVideoStoragePort;
     private final VideoFrameEventPort videoFrameEventPort;
 
-//    @Async
     @Override
-    public void uploadVideo(VideoFrameRequest videoFrameRequest, List<MultipartFile> files) {
+    public ProcessResponse uploadVideo(VideoFrameRequest videoFrameRequest, List<MultipartFile> files) {
 
+        var correlationId = UUID.randomUUID().toString();
+        var processResponse = new ProcessResponse();
+        var videos = new ArrayList<VideoProcessResponse>();
+        processResponse.setCorrelationId(correlationId);
         files.forEach(file -> {
 
             log.info("Uploading video file {}", file.getOriginalFilename());
@@ -35,7 +41,12 @@ public class CreateFileZipUseCaseImpl implements CreateFileZipUseCase {
             videoFrameRepositoryPort.saveVideoFrame(videoFrame);
             uploadVideoStoragePort.uploadVideoBucket(videoFrame.getDirectory(), file);
             videoFrameEventPort.sendVideoFrameProcessor(videoFrame);
+            var videoProcessResponse = new VideoProcessResponse(videoFrame.getId(), videoFrame.getName());
+            videos.add(videoProcessResponse);
         });
+        processResponse.setVideos(videos);
+
+        return processResponse;
     }
 
     private VideoFrame builVideoFrameDomain(VideoFrameRequest videoFrameRequest, String originalFileName) {
