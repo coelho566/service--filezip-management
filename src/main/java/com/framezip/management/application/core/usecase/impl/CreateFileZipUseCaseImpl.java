@@ -37,19 +37,20 @@ public class CreateFileZipUseCaseImpl implements CreateFileZipUseCase {
         files.forEach(file -> {
 
             log.info("Uploading video file {}", file.getOriginalFilename());
-            var videoFrame = builVideoFrameDomain(videoFrameRequest, file.getOriginalFilename());
+            var videoFrame = builVideoFrameDomain(videoFrameRequest, file.getOriginalFilename(), correlationId);
             videoFrameRepositoryPort.saveVideoFrame(videoFrame);
-            uploadVideoStoragePort.uploadVideoBucket(videoFrame.getDirectory(), file);
-            videoFrameEventPort.sendVideoFrameProcessor(videoFrame);
-            var videoProcessResponse = new VideoProcessResponse(videoFrame.getId(), videoFrame.getName());
+            uploadVideoStoragePort.uploadVideoBucket(videoFrame.getId(), file);
+            var videoProcessResponse = new VideoProcessResponse(videoFrame.getId(), videoFrame.getName(), videoFrameRequest.getIntervalFrame());
             videos.add(videoProcessResponse);
         });
+
         processResponse.setVideos(videos);
+        videoFrameEventPort.sendVideoFrameProcessor(processResponse);
 
         return processResponse;
     }
 
-    private VideoFrame builVideoFrameDomain(VideoFrameRequest videoFrameRequest, String originalFileName) {
+    private VideoFrame builVideoFrameDomain(VideoFrameRequest videoFrameRequest, String originalFileName, String correlationId) {
         //Todo - recuperar o formato do video
         var fileName = String.format("%s.mp4", UUID.randomUUID());
         var videoFrame = new VideoFrame();
@@ -60,7 +61,7 @@ public class CreateFileZipUseCaseImpl implements CreateFileZipUseCase {
         videoFrame.setUserEmail(videoFrameRequest.getUserEmail());
         videoFrame.setProcessorStatus(ProcessorStatus.RECEIVED);
         videoFrame.setIntervalFrame(videoFrameRequest.getIntervalFrame());
-        videoFrame.setCorrelationId(videoFrameRequest.getCorrelationId());
+        videoFrame.setCorrelationId(correlationId);
         return videoFrame;
     }
 }

@@ -62,7 +62,7 @@ public class VideoManagementController {
                                                   @PathVariable("fileName") String fileName) {
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName + ".zip");
         headers.add(HttpHeaders.CONTENT_TYPE, "application/zip");
 
         log.info("Init downloading zip file");

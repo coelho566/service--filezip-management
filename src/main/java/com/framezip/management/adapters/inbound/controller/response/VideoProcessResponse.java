@@ -11,4 +11,5 @@ public class VideoProcessResponse {
 
     private String zipId;
     private String fileName;
+    private Double duration;
 }

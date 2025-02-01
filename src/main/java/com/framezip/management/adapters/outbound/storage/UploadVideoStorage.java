@@ -5,27 +5,26 @@ import com.framezip.management.application.exception.BusinessException;
 import com.framezip.management.application.ports.out.UploadVideoStoragePort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class UploadVideoStorage implements UploadVideoStoragePort {
 
+    @Value("${s3.bucket.name}")
+    private String bucketName;
     private final S3Client s3Client;
-    private final String bucketName = "service-management-bucket";
 
     @Override
     public void uploadVideoBucket(String fileName, MultipartFile file) {
@@ -48,7 +47,7 @@ public class UploadVideoStorage implements UploadVideoStoragePort {
 
             var request = PutObjectRequest.builder()
                     .bucket(bucketName)
-                    .key(String.format("videos/%s", fileName))
+                    .key(String.format("videos/%s.mp4", fileName))
                     .contentType(contentType)
                     .build();
 

@@ -21,7 +21,7 @@ spring:
 
 s3:
   bucket:
-    name: service-management-bucket
+    name: filezip-bucket
 
 jwt:
   auth:

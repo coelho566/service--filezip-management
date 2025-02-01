@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class BaseResponse<T> {
 
     private T data;
-    private Error error;
+    private ErrorResponse error;
 
     public BaseResponse() {
     }
@@ -19,11 +19,11 @@ public class BaseResponse<T> {
         this.data = data;
     }
 
-    public BaseResponse(Error error) {
+    public BaseResponse(ErrorResponse error) {
         this.error = error;
     }
 
-    public BaseResponse(T data, Error error) {
+    public BaseResponse(T data, ErrorResponse error) {
         this.data = data;
         this.error = error;
     }
