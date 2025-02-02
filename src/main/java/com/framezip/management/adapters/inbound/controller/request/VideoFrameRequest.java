@@ -1,4 +1,4 @@
-package com.framezip.management.adapters.inbound.controller;
+package com.framezip.management.adapters.inbound.controller.request;
 
 import lombok.Builder;
 import lombok.Data;

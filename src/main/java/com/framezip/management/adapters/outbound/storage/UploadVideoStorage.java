@@ -1,29 +1,30 @@
 package com.framezip.management.adapters.outbound.storage;
 
 
+import com.framezip.management.application.exception.BusinessException;
 import com.framezip.management.application.ports.out.UploadVideoStoragePort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectResponse;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class UploadVideoStorage implements UploadVideoStoragePort {
 
+    @Value("${s3.bucket.name}")
+    private String bucketName;
     private final S3Client s3Client;
-    private final String bucketName = "service-management-bucket";
 
     @Override
     public void uploadVideoBucket(String fileName, MultipartFile file) {
@@ -33,8 +34,7 @@ public class UploadVideoStorage implements UploadVideoStoragePort {
             var contentType = file.getContentType();
             if (contentType == null || !contentType.startsWith("video/")) {
                 log.info("Content-Type not supported: {}", file.getContentType());
-//            return ResponseEntity.badRequest().body("O arquivo enviado não é um vídeo!");
-                throw new RuntimeException();
+                throw new BusinessException("Content-Type not supported: " + file.getContentType());
             }
 
             var resourcePath = Paths.get("src/main/resources/temp");
@@ -42,21 +42,24 @@ public class UploadVideoStorage implements UploadVideoStoragePort {
                 Files.createDirectories(resourcePath);
             }
 
-            Path tempFile = Files.createTempFile("video-", "-" + fileName);
+            var tempFile = Files.createTempFile("video-", "-" + fileName);
             file.transferTo(tempFile.toFile());
 
             var request = PutObjectRequest.builder()
                     .bucket(bucketName)
-                    .key(String.format("videos/%s", fileName))
+                    .key(String.format("videos/%s.mp4", fileName))
                     .contentType(contentType)
                     .build();
 
-            PutObjectResponse putObjectResponse = s3Client.putObject(request, RequestBody.fromFile(tempFile));
+            s3Client.putObject(request, RequestBody.fromFile(tempFile));
             // Remove o arquivo temporário
             Files.deleteIfExists(tempFile);
+        } catch (S3Exception e) {
+            log.error("Error occurred while uploading video bucket", e);
+            throw new BusinessException("Error occurred while uploading video bucket");
         } catch (IOException e) {
-            log.error(e.getMessage(), e);
-            throw new RuntimeException(e);
+            log.error("Error occurred while created video file local", e);
+            throw new BusinessException("Error occurred while created video file local");
         }
     }
 }

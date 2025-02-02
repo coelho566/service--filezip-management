@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum ProcessorStatus {
 
     RECEIVED,
+    STARTING_PROCESS,
     PROCESSING,
     PROCESSED
 }

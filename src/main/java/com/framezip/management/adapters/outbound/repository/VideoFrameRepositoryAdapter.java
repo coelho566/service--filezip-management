@@ -4,6 +4,7 @@ import com.framezip.management.application.core.domain.VideoFrame;
 import com.framezip.management.application.core.mapper.VideoFrameMapper;
 import com.framezip.management.application.core.repository.VideoFrameRepository;
 import com.framezip.management.application.core.repository.document.VideoDocument;
+import com.framezip.management.application.exception.ResourceNotFoundException;
 import com.framezip.management.application.ports.out.VideoFrameRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,7 @@ public class VideoFrameRepositoryAdapter implements VideoFrameRepositoryPort {
         var videoDocument = repository.findByUserIdAndCorrelationId(userId, correlationId);
 
         if (videoDocument.isEmpty()) {
-            throw new RuntimeException("Video document not found for userId: " + userId + ", correlationId: " + correlationId);
+            throw new ResourceNotFoundException("Video document not found for userId: " + userId + ", correlationId: " + correlationId);
         }
         return videoDocument;
     }
