@@ -1,13 +1,14 @@
 spring:
   application:
     name: service--framezip-management
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: framezip-group-id
+#  kafka:
+#    bootstrap-servers: localhost:9092
+#    consumer:
+#      group-id: framezip-group-id
   data:
     mongodb:
-      uri: mongodb://admin:admin@localhost:27017/db-framezip?authSource=admin
+      uri: mongodb+srv://admin:AdminPassword123@deliverynow-cluster.gg846.mongodb.net/?retryWrites=true&w=majority&appName=deliverynow-cluster
+      database: deliverynow-db
   servlet:
     multipart:
       max-file-size: 2GB
