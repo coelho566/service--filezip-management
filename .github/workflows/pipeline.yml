@@ -73,7 +73,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Config EKS
-        run: aws eks update-kubeconfig --name deliverynow-eks --region us-east-1
+        run: aws eks update-kubeconfig --name filezip-eks --region us-east-1
 
       - name: Clean pods to EKS
         run: |
