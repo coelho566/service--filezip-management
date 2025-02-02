@@ -20,6 +20,9 @@ spring:
           issuer-uri: http://localhost:5000/realms/filezip-dev
           jwk-set-uri: http://localhost:5000/realms/filezip-dev/protocol/openid-connect/certs
 
+server:
+  max-http-request-header-size: 1GB
+
 s3:
   bucket:
     name: filezip-bucket
