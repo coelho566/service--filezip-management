@@ -10,7 +10,7 @@ spec:
   type: LoadBalancer
   ports:
     - port: 80
-      nodePort: 31002
-      targetPort: 8082
+      nodePort: 31000
+      targetPort: 8080
   selector:
     app: service--filezip-management
