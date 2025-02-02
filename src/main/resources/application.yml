@@ -11,8 +11,8 @@ spring:
       database: deliverynow-db
   servlet:
     multipart:
-      max-file-size: 2GB
-      max-request-size: 2GB
+      max-file-size: 512MB
+      max-request-size: 512MB
   security:
     oauth2:
       resource-server:
@@ -21,7 +21,7 @@ spring:
           jwk-set-uri: http://localhost:5000/realms/filezip-dev/protocol/openid-connect/certs
 
 server:
-  max-http-request-header-size: 1GB
+  max-http-request-header-size: 512MB
 
 s3:
   bucket:
