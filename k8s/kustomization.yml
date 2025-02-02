@@ -7,4 +7,4 @@ resources:
   - metrics.yaml
   - app-deployment.yml
   - svc-application.yml
-  - app-configmap.yml
+#  - app-configmap.yml
