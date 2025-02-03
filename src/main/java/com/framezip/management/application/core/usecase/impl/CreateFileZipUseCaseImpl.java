@@ -4,18 +4,16 @@ import com.framezip.management.adapters.inbound.controller.request.VideoFrameReq
 import com.framezip.management.adapters.inbound.controller.response.ProcessResponse;
 import com.framezip.management.adapters.inbound.controller.response.VideoProcessResponse;
 import com.framezip.management.application.core.domain.ProcessorStatus;
+import com.framezip.management.application.core.domain.User;
 import com.framezip.management.application.core.domain.VideoFrame;
 import com.framezip.management.application.core.usecase.CreateFileZipUseCase;
 import com.framezip.management.application.ports.out.UploadVideoStoragePort;
-import com.framezip.management.application.ports.out.VideoFrameEventPort;
 import com.framezip.management.application.ports.out.VideoFrameRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -25,42 +23,42 @@ public class CreateFileZipUseCaseImpl implements CreateFileZipUseCase {
 
     private final VideoFrameRepositoryPort videoFrameRepositoryPort;
     private final UploadVideoStoragePort uploadVideoStoragePort;
-    private final VideoFrameEventPort videoFrameEventPort;
 
     @Override
-    public ProcessResponse uploadVideo(VideoFrameRequest videoFrameRequest, List<MultipartFile> files) {
+    public ProcessResponse uploadVideo(VideoFrameRequest videoFrameRequest, User user) {
 
         var correlationId = UUID.randomUUID().toString();
         var processResponse = new ProcessResponse();
         var videos = new ArrayList<VideoProcessResponse>();
         processResponse.setCorrelationId(correlationId);
-        files.forEach(file -> {
+        videoFrameRequest.getZipInfo().forEach(file -> {
 
-            log.info("Uploading video file {}", file.getOriginalFilename());
-            var videoFrame = builVideoFrameDomain(videoFrameRequest, file.getOriginalFilename(), correlationId);
+            log.info("Generete presigned url video file {}", file.getFileName());
+            var videoFrame = builVideoFrameDomain(user, file.getFileName(), correlationId, file.getIntervalFrame());
             videoFrameRepositoryPort.saveVideoFrame(videoFrame);
-            uploadVideoStoragePort.uploadVideoBucket(videoFrame.getId(), file);
-            var videoProcessResponse = new VideoProcessResponse(videoFrame.getId(), videoFrame.getName(), videoFrameRequest.getIntervalFrame());
+            var presignedUrl = uploadVideoStoragePort.uploadVideoBucket(videoFrame.getId());
+            var videoProcessResponse = VideoProcessResponse.builder()
+                    .videoId(videoFrame.getId())
+                    .presignedUrl(presignedUrl)
+                    .fileName(file.getFileName())
+                    .duration(file.getIntervalFrame())
+                    .build();
             videos.add(videoProcessResponse);
         });
 
         processResponse.setVideos(videos);
-        videoFrameEventPort.sendVideoFrameProcessor(processResponse);
 
         return processResponse;
     }
 
-    private VideoFrame builVideoFrameDomain(VideoFrameRequest videoFrameRequest, String originalFileName, String correlationId) {
-        //Todo - recuperar o formato do video
-        var fileName = String.format("%s.mp4", UUID.randomUUID());
+    private VideoFrame builVideoFrameDomain(User user, String originalFileName, String correlationId, Double intervalFrame) {
         var videoFrame = new VideoFrame();
-        videoFrame.setDirectory(fileName);
         videoFrame.setName(originalFileName);
-        videoFrame.setUserId(videoFrameRequest.getUserId());
-        videoFrame.setUserName(videoFrameRequest.getUserName());
-        videoFrame.setUserEmail(videoFrameRequest.getUserEmail());
+        videoFrame.setUserId(user.getId());
+        videoFrame.setUserName(user.getName());
+        videoFrame.setUserEmail(user.getEmail());
         videoFrame.setProcessorStatus(ProcessorStatus.RECEIVED);
-        videoFrame.setIntervalFrame(videoFrameRequest.getIntervalFrame());
+        videoFrame.setIntervalFrame(intervalFrame);
         videoFrame.setCorrelationId(correlationId);
         return videoFrame;
     }

@@ -1,6 +1,6 @@
 package com.framezip.management.application.core.usecase;
 
-import com.framezip.management.adapters.inbound.controller.VideoFrameResponse;
+import com.framezip.management.adapters.inbound.controller.response.VideoFrameResponse;
 
 import java.util.List;
 

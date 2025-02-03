@@ -8,14 +8,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.time.Duration;
 
 @Slf4j
 @Component
@@ -24,42 +23,31 @@ public class UploadVideoStorage implements UploadVideoStoragePort {
 
     @Value("${s3.bucket.name}")
     private String bucketName;
-    private final S3Client s3Client;
+    private final S3Presigner presigner;
 
     @Override
-    public void uploadVideoBucket(String fileName, MultipartFile file) {
+    public String uploadVideoBucket(String fileName) {
 
         try {
-            log.info("Uploading video bucket : {}", fileName);
-            var contentType = file.getContentType();
-            if (contentType == null || !contentType.startsWith("video/")) {
-                log.info("Content-Type not supported: {}", file.getContentType());
-                throw new BusinessException("Content-Type not supported: " + file.getContentType());
-            }
-
-            var resourcePath = Paths.get("src/main/resources/temp");
-            if (!Files.exists(resourcePath)) {
-                Files.createDirectories(resourcePath);
-            }
-
-            var tempFile = Files.createTempFile("video-", "-" + fileName);
-            file.transferTo(tempFile.toFile());
-
+            log.info("Generete presign url video bucket : {}", fileName);
             var request = PutObjectRequest.builder()
                     .bucket(bucketName)
                     .key(String.format("videos/%s.mp4", fileName))
-                    .contentType(contentType)
+                    .contentType("video/mp4")
                     .build();
 
-            s3Client.putObject(request, RequestBody.fromFile(tempFile));
-            // Remove o arquivo temporário
-            Files.deleteIfExists(tempFile);
+            var presignRequest = PutObjectPresignRequest.builder()
+                    .signatureDuration(Duration.ofMinutes(5))
+                    .putObjectRequest(request)
+                    .build();
+
+            var presignedPutObjectRequest = presigner.presignPutObject(presignRequest);
+            return presignedPutObjectRequest.url().toString();
+
+
         } catch (S3Exception e) {
-            log.error("Error occurred while uploading video bucket", e);
-            throw new BusinessException("Error occurred while uploading video bucket");
-        } catch (IOException e) {
-            log.error("Error occurred while created video file local", e);
-            throw new BusinessException("Error occurred while created video file local");
+            log.error("Error occurred while genereted presigner url video bucket", e);
+            throw new BusinessException("Error occurred while genereted presigner url video bucket");
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.framezip.management.adapters.inbound.controller;
+package com.framezip.management.adapters.inbound.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

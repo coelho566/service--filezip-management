@@ -10,7 +10,6 @@ public class VideoFrame {
     private String userId;
     private String userName;
     private String userEmail;
-    private String directory;
     private String correlationId;
     private Double intervalFrame;
     private ProcessorStatus processorStatus;

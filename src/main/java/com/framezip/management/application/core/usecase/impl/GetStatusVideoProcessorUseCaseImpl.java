@@ -1,6 +1,6 @@
 package com.framezip.management.application.core.usecase.impl;
 
-import com.framezip.management.adapters.inbound.controller.VideoFrameResponse;
+import com.framezip.management.adapters.inbound.controller.response.VideoFrameResponse;
 import com.framezip.management.application.core.mapper.VideoFrameMapper;
 import com.framezip.management.application.core.usecase.GetStatusVideoProcessorUseCase;
 import com.framezip.management.application.ports.out.VideoFrameRepositoryPort;

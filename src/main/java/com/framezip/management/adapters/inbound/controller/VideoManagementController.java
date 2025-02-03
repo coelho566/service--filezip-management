@@ -4,9 +4,11 @@ package com.framezip.management.adapters.inbound.controller;
 import com.framezip.management.adapters.inbound.controller.request.VideoFrameRequest;
 import com.framezip.management.adapters.inbound.controller.response.BaseResponse;
 import com.framezip.management.adapters.inbound.controller.response.ProcessResponse;
+import com.framezip.management.adapters.inbound.controller.response.VideoFrameResponse;
 import com.framezip.management.application.core.usecase.CreateFileZipUseCase;
 import com.framezip.management.application.core.usecase.DownloadFileZipUseCase;
 import com.framezip.management.application.core.usecase.GetStatusVideoProcessorUseCase;
+import com.framezip.management.application.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -30,19 +32,12 @@ public class VideoManagementController {
     private final GetStatusVideoProcessorUseCase getStatusVideoProcessorUseCase;
     private final DownloadFileZipUseCase downloadFileZipUseCase;
 
-    @PostMapping("/upload")
-    public ResponseEntity<ProcessResponse> uploadVideo(JwtAuthenticationToken auth,
-                                                       @RequestParam("intervalFrame") Double intervalFrame,
-                                                       @RequestParam("files") List<MultipartFile> files) {
-        log.info("Uploading video frame");
-        var videoFrameRequest = VideoFrameRequest.builder()
-                .userId(auth.getToken().getClaimAsString(StandardClaimNames.SUB))
-                .userName(auth.getToken().getClaimAsString(StandardClaimNames.PREFERRED_USERNAME))
-                .userEmail(auth.getToken().getClaimAsString(StandardClaimNames.EMAIL))
-                .intervalFrame(intervalFrame)
-                .build();
+    @PostMapping("/presigned-url")
+    public ResponseEntity<ProcessResponse> generatedLinkUploadVideo(JwtAuthenticationToken auth,
+                                                                    @RequestBody VideoFrameRequest videoFrameRequest) {
 
-        var processResponse = createFileZipUseCase.uploadVideo(videoFrameRequest, files);
+        var user = JwtUtils.getUser(auth);
+        var processResponse = createFileZipUseCase.uploadVideo(videoFrameRequest, user);
         return ResponseEntity.ok(processResponse);
     }
 
