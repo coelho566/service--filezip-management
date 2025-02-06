@@ -1,4 +1,4 @@
-package com.framezip.management.adapters.inbound.controller;
+package com.framezip.management.adapters.inbound.controller.handle;
 
 import com.framezip.management.adapters.inbound.controller.response.BaseResponse;
 import com.framezip.management.adapters.inbound.controller.response.ErrorResponse;

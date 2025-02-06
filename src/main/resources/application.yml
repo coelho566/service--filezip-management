@@ -1,10 +1,6 @@
 spring:
   application:
     name: service--framezip-management
-#  kafka:
-#    bootstrap-servers: localhost:9092
-#    consumer:
-#      group-id: framezip-group-id
   data:
     mongodb:
       uri: mongodb+srv://admin:AdminPassword123@deliverynow-cluster.gg846.mongodb.net/?retryWrites=true&w=majority&appName=deliverynow-cluster
@@ -19,10 +15,6 @@ spring:
         jwt:
           issuer-uri: http://localhost:5000/realms/filezip-dev
           jwk-set-uri: http://localhost:5000/realms/filezip-dev/protocol/openid-connect/certs
-
-#server:
-#  max-http-request-header-size: 512MB
-
 s3:
   bucket:
     name: filezip-bucket-service
@@ -33,12 +25,7 @@ jwt:
       resource-id: my-super-client
       principal-attribute: principal_username
 
-#logging:
-#  level:
-#    root: DEBUG  # Nível de log para toda a aplicação
-#    org.springframework: DEBUG  # Logs detalhados do Spring
-#    org.hibernate: DEBUG  # Logs detalhados do Hibernate
-#    com.seuprojeto: DEBUG  # Pacote específico da sua aplicação
+
 
 
 
