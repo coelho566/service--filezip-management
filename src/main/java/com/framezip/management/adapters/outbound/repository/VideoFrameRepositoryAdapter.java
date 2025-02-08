@@ -47,6 +47,13 @@ public class VideoFrameRepositoryAdapter implements VideoFrameRepositoryPort {
     @Override
     public Optional<VideoDocument> getVideoByUserIdAndFileId(String userId, String fileId) {
 
+        log.info("Get Video By User Id File Id: {}", fileId);
         return repository.findByUserIdAndId(userId, fileId);
+    }
+
+    @Override
+    public Optional<VideoDocument> getVideoById(String videoId) {
+        log.info("Get Video By Id Id: {}", videoId);
+        return repository.findById(videoId);
     }
 }
