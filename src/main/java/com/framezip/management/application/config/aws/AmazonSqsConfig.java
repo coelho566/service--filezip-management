@@ -1,7 +1,10 @@
 package com.framezip.management.application.config.aws;
 
+import io.awspring.cloud.sqs.listener.QueueNotFoundStrategy;
+import io.awspring.cloud.sqs.operations.SqsTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
@@ -22,7 +25,15 @@ public class AmazonSqsConfig {
     public SqsAsyncClient sqsAsyncClient() {
         return SqsAsyncClient.builder()
                 .region(Region.US_EAST_1)
-                .credentialsProvider(ProfileCredentialsProvider.create())
+                .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
+                .build();
+    }
+
+    @Bean
+    public SqsTemplate sqsTemplate() {
+        return SqsTemplate.builder()
+                .sqsAsyncClient(sqsAsyncClient())
+                .configure(o -> o.queueNotFoundStrategy(QueueNotFoundStrategy.FAIL))
                 .build();
     }
 }
