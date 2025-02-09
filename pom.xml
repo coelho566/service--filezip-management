@@ -91,10 +91,10 @@
             <version>1.5.5.Final</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>software.amazon.awssdk</groupId>-->
-<!--            <artifactId>sqs</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>sqs</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>io.awspring.cloud</groupId>
