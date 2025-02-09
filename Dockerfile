@@ -23,5 +23,14 @@ COPY --from=builder /app/target/*.jar app.jar
 # Expõe a porta da aplicação
 EXPOSE 8080
 
+ARG MONGO_URI
+ARG MAILER_EMAIL
+ARG MAILER_TOKEN
+
+#
+ENV MONGO_URI=${MONGO_URI}
+ENV MAILER_EMAIL=${MAILER_EMAIL}
+ENV MAILER_TOKEN=${MAILER_TOKEN}
+
 # Comando de execução da aplicação
 ENTRYPOINT ["java", "-jar", "app.jar"]

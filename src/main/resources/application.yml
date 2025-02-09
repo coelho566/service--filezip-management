@@ -3,7 +3,7 @@ spring:
     name: service--framezip-management
   data:
     mongodb:
-      uri: mongodb+srv://admin:AdminPassword123@deliverynow-cluster.gg846.mongodb.net/?retryWrites=true&w=majority&appName=deliverynow-cluster
+      uri: ${MONGO_URI:token}
       database: deliverynow-db
   servlet:
     multipart:
@@ -13,11 +13,19 @@ spring:
     oauth2:
       resource-server:
         jwt:
-          issuer-uri: http://localhost:5000/realms/filezip-dev
-          jwk-set-uri: http://localhost:5000/realms/filezip-dev/protocol/openid-connect/certs
+          issuer-uri: https://keycloak-staging-alb-2122574475.us-east-1.elb.amazonaws.com/realms/filezip-dev
+          jwk-set-uri: https://keycloak-staging-alb-2122574475.us-east-1.elb.amazonaws.com/realms/filezip-dev/protocol/openid-connect/certs
 s3:
   bucket:
     name: filezip-bucket-service
+
+mailersend:
+  email: ${MAILER_EMAIL:token}
+  token: ${MAILER_TOKEN:token}
+
+aws:
+  sqs:
+    queue-name: filezip-send_email_queue
 
 jwt:
   auth:

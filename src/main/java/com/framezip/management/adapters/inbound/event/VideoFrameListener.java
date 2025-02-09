@@ -6,8 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -16,7 +14,7 @@ public class VideoFrameListener {
     private final SendEmailUseCase sendEmailUseCase;
 
     @SqsListener("${aws.sqs.queue-name}")
-    public void handleS3Event(String message) throws IOException {
+    public void handleS3Event(String message) {
 
         log.info("Received S3 event: {}", message);
         sendEmailUseCase.sendEmail(message);
