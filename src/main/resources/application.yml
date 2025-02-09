@@ -30,6 +30,10 @@ aws:
     region: us-east-1
     queue:
       filezip-send_email_queue: https://sqs.us-east-1.amazonaws.com/123456789012/filezip-send_email_queue
+  credentials:
+    access-key: ASIARTTRF7VTLB4J5D7Y
+    secret-key: RDDptFJUAtk7m1iw0sD4jGLURV/EuCpaarAjnaio
+
 
 
 jwt:
