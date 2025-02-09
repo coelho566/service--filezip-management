@@ -25,7 +25,8 @@ mailersend:
 
 aws:
   sqs:
-    queue-name: filezip-send_email_queue
+    auto-create: false
+
 
 jwt:
   auth:
