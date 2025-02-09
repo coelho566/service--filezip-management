@@ -1,6 +1,6 @@
 package com.framezip.management.application.core.mapper;
 
-import com.framezip.management.adapters.inbound.controller.VideoFrameResponse;
+import com.framezip.management.adapters.inbound.controller.response.VideoFrameResponse;
 import com.framezip.management.application.core.domain.VideoFrame;
 import com.framezip.management.application.core.repository.document.VideoDocument;
 import org.mapstruct.Mapper;

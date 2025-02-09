@@ -12,4 +12,5 @@ public interface VideoFrameRepositoryPort {
 
     List<VideoDocument> getVideoByUserId(String userId, String correlationId);
     Optional<VideoDocument> getVideoByUserIdAndFileId(String userId, String fileId);
+    Optional<VideoDocument> getVideoById(String videoId);
 }
