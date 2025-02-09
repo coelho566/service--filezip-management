@@ -27,7 +27,7 @@ public class AmazonSqsConfig {
         return SqsAsyncClient.builder()
                 .region(Region.US_EAST_1)
                 .credentialsProvider(ProfileCredentialsProvider.create())
-                .endpointOverride(URI.create("https://sqs.us-east-1.amazonaws.com/"))
+//                .endpointOverride(URI.create("https://sqs.us-east-1.amazonaws.com/"))
                 .build();
     }
 
