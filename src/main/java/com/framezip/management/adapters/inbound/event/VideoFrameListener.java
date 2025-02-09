@@ -13,7 +13,7 @@ public class VideoFrameListener {
 
     private final SendEmailUseCase sendEmailUseCase;
 
-    @SqsListener("filezip-send_email_queue")
+    @SqsListener("filezip-bucket-service.fifo")
     public void handleS3Event(String message) {
 
         log.info("Received S3 event: {}", message);
