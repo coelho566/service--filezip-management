@@ -49,6 +49,9 @@ jobs:
       - name: Build, tag, and push the image to Amazon ECR
         id: build-image
         env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.REPO_NAME }}
           MONGO_URI: ${{ secrets.MONGO_URI }}
@@ -60,6 +63,9 @@ jobs:
           --build-arg MONGO_URI=$MONGO_URI \
           --build-arg MAILER_EMAIL=$MAILER_EMAIL \
           --build-arg MAILER_TOKEN=$MAILER_TOKEN \
+          --build-arg MAILER_TOKEN=$AWS_ACCESS_KEY_ID \
+          --build-arg MAILER_TOKEN=$AWS_SECRET_ACCESS_KEY \
+          --build-arg MAILER_TOKEN=$AWS_SESSION_TOKEN \
           -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG

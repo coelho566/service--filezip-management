@@ -3,7 +3,7 @@ spring:
     name: service--framezip-management
   data:
     mongodb:
-      uri: ${MONGO_URI:mongodb+srv://admin:AdminPassword123@deliverynow-cluster.gg846.mongodb.net/?retryWrites=true&w=majority&appName=deliverynow-cluster}
+      uri: ${MONGO_URI:uri}
       database: deliverynow-db
   servlet:
     multipart:
@@ -14,8 +14,9 @@ spring:
       region:
         static: us-east-1
       credentials:
-        access-key: ASIARTTRF7VTII7R24BB
-        secret-key: xY3ggF3/TRQqip36NvQ33ne5GvGo+F6Zf8mY1g+1
+        access-key: ${AWS_ACCESS_KEY_ID:key}
+        secret-key: ${AWS_SECRET_ACCESS_KEY:key}
+        session-token: ${AWS_SESSION_TOKEN:session}
       sqs:
         endpoint: https://sqs.us-east-1.amazonaws.com/110832778598/filezip-send_email_queue
 
@@ -30,8 +31,8 @@ s3:
     name: filezip-bucket-service
 
 mailersend:
-  email: ${MAILER_EMAIL:MS_5SU9mf@trial-7dnvo4dqpj3l5r86.mlsender.net}
-  token: ${MAILER_TOKEN:mlsn.5eccb3828a63071321bc1e9468117b5c5f0f7573939821737d2c0b89865466fd}
+  email: ${MAILER_EMAIL:email}
+  token: ${MAILER_TOKEN:token}
 
 aws:
   sqs:
