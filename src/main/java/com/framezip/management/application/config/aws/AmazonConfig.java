@@ -41,7 +41,6 @@ public class AmazonConfig {
                 .credentialsProvider(StaticCredentialsProvider
                         .create(awsSessionCredentials()))
                 .build();
-        // add more Options
     }
 
     @Bean
