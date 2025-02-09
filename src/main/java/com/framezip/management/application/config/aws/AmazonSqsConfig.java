@@ -32,8 +32,7 @@ public class AmazonSqsConfig {
         return SqsAsyncClient
                 .builder()
                 .region(Region.of(region))
-                .credentialsProvider(StaticCredentialsProvider
-                        .create(AwsBasicCredentials.create(accessKey, secretKey)))
+                .credentialsProvider(ProfileCredentialsProvider.create())
                 .build();
         // add more Options
     }
