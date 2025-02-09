@@ -9,6 +9,8 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 import software.amazon.awssdk.services.sqs.SqsClient;
 
+import java.net.URI;
+
 @Configuration
 public class AmazonSqsConfig {
 
@@ -25,6 +27,7 @@ public class AmazonSqsConfig {
         return SqsAsyncClient.builder()
                 .region(Region.US_EAST_1)
                 .credentialsProvider(ProfileCredentialsProvider.create())
+                .endpointOverride(URI.create("https://sqs.us-east-1.amazonaws.com/"))
                 .build();
     }
 

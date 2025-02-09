@@ -26,6 +26,10 @@ mailersend:
 aws:
   sqs:
     auto-create: false
+    enabled: true
+    region: us-east-1
+    queue:
+      filezip-send_email_queue: https://sqs.us-east-1.amazonaws.com/123456789012/filezip-send_email_queue
 
 
 jwt:
