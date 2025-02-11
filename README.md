@@ -18,7 +18,7 @@
 ![System design](img/cobertura-teste.png)
 
 ## | 🖥️ • Event Storming
-- https://miro.com/miroverse/sistema-de-delivery/?social=copy-link
+- https://miro.com/miroverse/system-file-zip/?social=copy-link
 
 ## | ✉️ • Deploying
 
